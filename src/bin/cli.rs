@@ -14,6 +14,7 @@ fn main() {
 }
 
 struct App {
+    _selected: Option<Lineup>,
     _filter: String,
     lineups: Vec<Lineup>,
 }
@@ -21,6 +22,7 @@ struct App {
 impl App {
     fn new(_cc: &eframe::CreationContext<'_>) -> Self {
         Self {
+            _selected: None,
             _filter: String::new(),
             lineups: vec![
                 Lineup::new(
@@ -48,15 +50,20 @@ impl App {
 
 impl eframe::App for App {
     fn ui(&mut self, ui: &mut egui::Ui, _frame: &mut eframe::Frame) {
-        egui::CentralPanel::default().show(ui, |ui| {
-            ui.heading("Lineups");
-            if !self.lineups.is_empty() {
-                ui.columns(self.lineups.len(), |cols| {
-                    for (i, lineup) in self.lineups.iter().enumerate() {
-                        cols[i].label(lineup.to_string());
+        egui::Panel::top("header").show(ui, |ui| ui.label("Lineups"));
+        egui::Panel::left("side_bar").show(ui, |ui| {
+            ui.columns(1, |col| {
+                if !self.lineups.is_empty() {
+                    for (_, lineup) in self.lineups.iter().enumerate() {
+                        col[0].label(lineup.to_string());
                     }
-                })
-            }
+                } else {
+                    col[0].label("No lineups available yet.");
+                }
+            })
+        });
+        egui::CentralPanel::default().show(ui, |ui| {
+            ui.label("this is the central panel");
         });
     }
 }
