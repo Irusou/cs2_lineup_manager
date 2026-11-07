@@ -7,13 +7,13 @@ use uuid::Uuid;
 #[derive(Deserialize, Serialize, Debug, Clone)]
 pub struct Lineup {
     id: Uuid,
-    title: String,
-    map: Map,
-    kind: UtilityKind,
-    throw_type: ThrowType,
-    notes: String,
-    tags: Vec<String>,
-    images: Vec<String>,
+    pub title: String,
+    pub map: Map,
+    pub kind: UtilityKind,
+    pub throw_type: ThrowType,
+    pub notes: String,
+    pub tags: Vec<String>,
+    pub images: Vec<String>,
 }
 
 impl Lineup {
@@ -32,6 +32,10 @@ impl Lineup {
 
     pub fn as_label(&self) -> String {
         format!("{}: {}\n{}", self.map, self.kind, self.title)
+    }
+
+    pub fn id(&self) -> Uuid {
+        self.id
     }
 }
 
