@@ -3,6 +3,7 @@ use cs2_lineup_manager::domain::{
     types::{Map, ThrowType, UtilityKind},
 };
 use eframe::egui;
+use uuid::Uuid;
 
 fn main() {
     let native_options = eframe::NativeOptions::default();
@@ -13,15 +14,25 @@ fn main() {
     );
 }
 
+struct SideBar {
+    min: f32,
+    max: f32,
+}
+
 struct App {
-    selected: Option<usize>,
+    selected: Option<Uuid>,
     _filter: String,
     lineups: Vec<Lineup>,
+    sidebar: SideBar,
 }
 
 impl App {
     fn new(_cc: &eframe::CreationContext<'_>) -> Self {
         Self {
+            sidebar: SideBar {
+                min: 120.0,
+                max: 200.0,
+            },
             selected: None,
             _filter: String::new(),
             lineups: vec![
@@ -62,15 +73,16 @@ impl eframe::App for App {
 
         // creates the sidebar where the lineups will be displayed
         egui::Panel::left("side_bar")
-            .min_size(120.0)
-            .max_size(200.0)
+            .min_size(self.sidebar.min)
+            .max_size(self.sidebar.max)
             .show(ui, |ui| {
                 if !self.lineups.is_empty() {
-                    for (i, lineup) in self.lineups.iter().enumerate() {
-                        if ui.selectable_label(true, lineup.as_label()).clicked() {
-                            println!("{:?}", lineup);
-                            self.selected = Option::Some(i);
-                        };
+                    for lineup in self.lineups.iter() {
+                        let selected = self.selected == Some(lineup.id());
+                        if ui.selectable_label(selected, lineup.as_label()).clicked() {
+                            println!("{:?}", lineup); // remove on last compilation
+                            self.selected = Some(lineup.id());
+                        }
                     }
                 } else {
                     ui.label("No lineups available yet.");
@@ -80,12 +92,12 @@ impl eframe::App for App {
         // main panel where a selected lineup will be shown along with the options to create and
         // delete a lineup
         // if a lineup is in display, its fields should be editable
-        egui::CentralPanel::default().show(ui, |ui| {
-            if self.selected.is_some() {
-                if let Some(index) = self.selected {
-                    ui.label(self.lineups[index].to_string());
-                }
-            }
+        egui::CentralPanel::default().show(ui, |ui| match self.selected {
+            Some(id) => match self.lineups.iter().find(|lineup| lineup.id() == id) {
+                Some(lineup) => ui.label(lineup.to_string()),
+                None => ui.label("Lineup not found"),
+            },
+            None => ui.label("Select a lineup"),
         });
     }
 }
