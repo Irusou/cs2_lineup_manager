@@ -13,48 +13,50 @@ fn main() {
     );
 }
 
-#[derive(Default)]
-struct App {}
+struct App {
+    _filter: String,
+    lineups: Vec<Lineup>,
+}
 
 impl App {
     fn new(_cc: &eframe::CreationContext<'_>) -> Self {
-        Self::default()
+        Self {
+            _filter: String::new(),
+            lineups: vec![
+                Lineup::new(
+                    String::from("Window insta #1"),
+                    Map::Mirage,
+                    UtilityKind::Smoke,
+                    ThrowType::WJumpthrow,
+                ),
+                Lineup::new(
+                    String::from("Pop flash short"),
+                    Map::Dust2,
+                    UtilityKind::Flash,
+                    ThrowType::Jumpthrow,
+                ),
+                Lineup::new(
+                    String::from("Rockets moly"),
+                    Map::Cache,
+                    UtilityKind::Molotov,
+                    ThrowType::Stand,
+                ),
+            ],
+        }
     }
 }
 
 impl eframe::App for App {
     fn ui(&mut self, ui: &mut egui::Ui, _frame: &mut eframe::Frame) {
         egui::CentralPanel::default().show(ui, |ui| {
-            ui.heading("Hello world");
-            ui.columns(3, |cols| {
-                cols[0].label(
-                    Lineup::new(
-                        String::from("Window insta #1"),
-                        Map::Mirage,
-                        UtilityKind::Smoke,
-                        ThrowType::WJumpthrow,
-                    )
-                    .to_string(),
-                );
-                cols[1].label(
-                    Lineup::new(
-                        String::from("Pop flash short"),
-                        Map::Dust2,
-                        UtilityKind::Flash,
-                        ThrowType::Jumpthrow,
-                    )
-                    .to_string(),
-                );
-                cols[2].label(
-                    Lineup::new(
-                        String::from("Rockets moly"),
-                        Map::Cache,
-                        UtilityKind::Molotov,
-                        ThrowType::Stand,
-                    )
-                    .to_string(),
-                );
-            })
+            ui.heading("Lineups");
+            if !self.lineups.is_empty() {
+                ui.columns(self.lineups.len(), |cols| {
+                    for (i, lineup) in self.lineups.iter().enumerate() {
+                        cols[i].label(lineup.to_string());
+                    }
+                })
+            }
         });
     }
 }
