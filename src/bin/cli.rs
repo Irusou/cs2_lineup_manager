@@ -61,28 +61,29 @@ impl eframe::App for App {
         });
 
         // creates the sidebar where the lineups will be displayed
-        egui::Panel::left("side_bar").show(ui, |ui| {
-            if !self.lineups.is_empty() {
-                for (i, lineup) in self.lineups.iter().enumerate() {
-                    if ui.selectable_label(true, lineup.to_string()).clicked() {
-                        self.selected = Option::Some(i);
-                    };
+        egui::Panel::left("side_bar")
+            .min_size(120.0)
+            .max_size(200.0)
+            .show(ui, |ui| {
+                if !self.lineups.is_empty() {
+                    for (i, lineup) in self.lineups.iter().enumerate() {
+                        if ui.selectable_label(true, lineup.as_label()).clicked() {
+                            println!("{:?}", lineup);
+                            self.selected = Option::Some(i);
+                        };
+                    }
+                } else {
+                    ui.label("No lineups available yet.");
                 }
-            } else {
-                ui.label("No lineups available yet.");
-            }
-        });
+            });
 
         // main panel where a selected lineup will be shown along with the options to create and
         // delete a lineup
         // if a lineup is in display, its fields should be editable
         egui::CentralPanel::default().show(ui, |ui| {
             if self.selected.is_some() {
-                match self.selected {
-                    Some(index) => {
-                        ui.label(self.lineups[index].to_string());
-                    }
-                    None => {}
+                if let Some(index) = self.selected {
+                    ui.label(self.lineups[index].to_string());
                 }
             }
         });
