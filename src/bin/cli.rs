@@ -14,7 +14,7 @@ fn main() {
 }
 
 struct App {
-    _selected: Option<Lineup>,
+    selected: Option<usize>,
     _filter: String,
     lineups: Vec<Lineup>,
 }
@@ -22,7 +22,7 @@ struct App {
 impl App {
     fn new(_cc: &eframe::CreationContext<'_>) -> Self {
         Self {
-            _selected: None,
+            selected: None,
             _filter: String::new(),
             lineups: vec![
                 Lineup::new(
@@ -50,20 +50,41 @@ impl App {
 
 impl eframe::App for App {
     fn ui(&mut self, ui: &mut egui::Ui, _frame: &mut eframe::Frame) {
-        egui::Panel::top("header").show(ui, |ui| ui.label("Lineups"));
-        egui::Panel::left("side_bar").show(ui, |ui| {
-            ui.columns(1, |col| {
-                if !self.lineups.is_empty() {
-                    for (_, lineup) in self.lineups.iter().enumerate() {
-                        col[0].label(lineup.to_string());
-                    }
-                } else {
-                    col[0].label("No lineups available yet.");
-                }
-            })
+        //creates the header of the app
+        egui::Panel::top("header").show(ui, |ui| {
+            ui.label("Lineups");
+            if !self.lineups.is_empty() {
+                // add a search bar
+                // for now create a label to where the search bar will be
+                ui.label("this will be an input to filter the lineups");
+            }
         });
+
+        // creates the sidebar where the lineups will be displayed
+        egui::Panel::left("side_bar").show(ui, |ui| {
+            if !self.lineups.is_empty() {
+                for (i, lineup) in self.lineups.iter().enumerate() {
+                    if ui.selectable_label(true, lineup.to_string()).clicked() {
+                        self.selected = Option::Some(i);
+                    };
+                }
+            } else {
+                ui.label("No lineups available yet.");
+            }
+        });
+
+        // main panel where a selected lineup will be shown along with the options to create and
+        // delete a lineup
+        // if a lineup is in display, its fields should be editable
         egui::CentralPanel::default().show(ui, |ui| {
-            ui.label("this is the central panel");
+            if self.selected.is_some() {
+                match self.selected {
+                    Some(index) => {
+                        ui.label(self.lineups[index].to_string());
+                    }
+                    None => {}
+                }
+            }
         });
     }
 }
