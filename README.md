@@ -62,7 +62,7 @@ src/
 ### Run it
 
 ```bash
-git clone https://github.com/<your-username>/cs2-lineup-manager.git
+git clone https://github.com/Irusou/cs2-lineup-manager.git
 cd cs2-lineup-manager
 cargo run
 ```
