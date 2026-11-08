@@ -30,7 +30,7 @@ impl App {
     fn new(_cc: &eframe::CreationContext<'_>) -> Self {
         Self {
             sidebar: SideBar {
-                min: 120.0,
+                min: 150.0,
                 max: 200.0,
             },
             selected: None,
