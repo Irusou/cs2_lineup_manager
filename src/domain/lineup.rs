@@ -4,7 +4,7 @@ use crate::domain::types::{Map, ThrowType, UtilityKind};
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
-#[derive(Deserialize, Serialize, Debug, Clone)]
+#[derive(Deserialize, Serialize, Debug, Clone, PartialEq)]
 pub struct Lineup {
     id: Uuid,
     pub title: String,
