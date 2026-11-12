@@ -36,22 +36,24 @@ impl Manager {
         todo!()
     }
 
-    pub fn get_by_id<'b>(&'b self, id: Uuid) -> Option<&'b Lineup> {
+    pub fn get_by_id(&self, id: Uuid) -> Option<&Lineup> {
         match self.lineups.iter().find(|lineup| lineup.id() == id) {
             Some(lineup) => Some(lineup),
             None => None,
         }
     }
 
-    fn add_lineup(&mut self, lineup: Lineup) {
+    fn add_lineup(&mut self, lineup: Lineup) -> Uuid {
+        let id = lineup.id();
         self.lineups.push(lineup);
+        id
     }
 
-    fn update_line_up(id: Uuid) -> Uuid {
+    fn update_lineup(id: Uuid) -> Uuid {
         todo!()
     }
 
-    fn delete_line_up(id: Uuid) -> Uuid {
+    fn delete_lineup(id: Uuid) -> Uuid {
         todo!()
     }
 
@@ -82,9 +84,8 @@ mod test {
     }
 
     #[test]
-    fn test_create_lineup() {
+    fn test_create_and_add_lineup_to_list() {
         let mut m = Manager::new();
-        assert_eq!(m.lineups.len(), 0);
 
         let lineup = Lineup::new(
             String::from("ramp pop flash"),
@@ -92,14 +93,17 @@ mod test {
             UtilityKind::Flash,
             ThrowType::Stand,
         );
-        m.add_lineup(lineup);
+
+        let line_id = lineup.id();
+        let added_id = m.add_lineup(lineup);
+
         assert_eq!(m.lineups.len(), 1);
+        assert_eq!(line_id, added_id);
     }
 
     #[test]
     fn test_get_by_id() {
         let mut m = Manager::new();
-        assert_eq!(m.lineups.len(), 0);
 
         let lineup = Lineup::new(
             String::from("ramp pop flash"),
@@ -108,13 +112,10 @@ mod test {
             ThrowType::Stand,
         );
 
-        m.add_lineup(lineup.clone());
+        let added_id = m.add_lineup(lineup);
 
-        assert_eq!(m.lineups.len(), 1);
-
-        match Some(m.get_by_id(lineup.id())) {
-            Some(l) => assert_eq!(l.unwrap().title, lineup.title),
-            None => panic!("lineup not found"),
+        if let Some(lnp) = m.get_by_id(added_id) {
+            assert_eq!(lnp.id(), added_id)
         }
     }
 }

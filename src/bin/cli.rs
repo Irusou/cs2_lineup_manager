@@ -84,7 +84,6 @@ impl eframe::App for App {
                     for lineup in self.manager.lineups().iter() {
                         let selected = self.selected == Some(lineup.id());
                         if ui.selectable_label(selected, lineup.as_label()).clicked() {
-                            println!("{:?} {:?}", lineup, selected); // remove on last compilation
                             self.selected = Some(lineup.id());
                         }
                     }
