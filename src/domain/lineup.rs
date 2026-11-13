@@ -1,8 +1,14 @@
 use std::fmt::Display;
 
-use crate::domain::types::{Map, ThrowType, UtilityKind};
+use crate::domain::types::{Map, Role, ThrowType, UtilityKind};
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
+
+#[derive(Deserialize, Serialize, Debug, Clone, PartialEq)]
+pub struct Image {
+    path: String,
+    role: Role,
+}
 
 #[derive(Deserialize, Serialize, Debug, Clone, PartialEq)]
 pub struct Lineup {
@@ -13,7 +19,7 @@ pub struct Lineup {
     pub throw_type: ThrowType,
     pub notes: String,
     pub tags: Vec<String>,
-    pub images: Vec<String>,
+    pub images: Vec<Image>,
 }
 
 impl Lineup {

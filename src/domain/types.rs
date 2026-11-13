@@ -85,3 +85,22 @@ impl std::fmt::Display for ThrowType {
         }
     }
 }
+
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+pub enum Role {
+    Position, // where to stand
+    Aim,      // where to look
+    Outcome,  // where it lands/explodes
+    Other,
+}
+
+impl std::fmt::Display for Role {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::Position => write!(f, "Position"),
+            Self::Aim => write!(f, "Aim"),
+            Self::Outcome => write!(f, "Outcome"),
+            Self::Other => write!(f, "Other"),
+        }
+    }
+}
